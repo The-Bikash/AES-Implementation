@@ -1,6 +1,6 @@
 # AES Encryption Algorithm Implementation in C
 
-![AES Logo](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard#/media/File:AES_(Rijndael)_Round_Function.png)
+![AES Logo](https://github.com/user-attachments/assets/df36507f-0a8e-4f89-847d-43cfb4e785ea))
 
 Welcome to the AES Encryption Algorithm Implementation repository! This project provides a complete implementation of the Advanced Encryption Standard (AES) in C. AES is a symmetric key encryption algorithm widely used to secure data.
 
@@ -16,7 +16,7 @@ Welcome to the AES Encryption Algorithm Implementation repository! This project 
 
 ## 🔥 Features
 
-- **Support for AES-128, AES-192, and AES-256**: Encrypt and decrypt data using various key sizes.
+- **Support for AES-128**: Encrypt and decrypt data using 128 bit key size.
 - **Efficient Implementation**: Optimized for performance with well-commented code.
 - **Easy to Integrate**: Simple API for integration into your projects.
 
@@ -24,33 +24,37 @@ Welcome to the AES Encryption Algorithm Implementation repository! This project 
 
 To get started with this implementation, you'll need to clone the repository and compile the code.
 
-### Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/aes-c.git
-cd aes-c
-gcc -o aes aes.c
-```
 ## 📜 Usage
 The repository includes example usage for encryption and decryption.
 ```C
 #include "aes.h"
+#include "aes_modes.h"
+
+#include <stdio.h>
+
 
 int main() {
-    uint8_t key[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 
-                       0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
-    uint8_t plaintext[16] = "Encrypt this!";
-    uint8_t ciphertext[16];
-    uint8_t decryptedtext[16];
 
-    AES_ECB_encrypt(plaintext, key, ciphertext, 16);
-    AES_ECB_decrypt(ciphertext, key, decryptedtext, 16);
+    Block128 user_key = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+
+    Block128 keys[11];
+    gen_key_schedule_128(user_key, keys);
+
+    unsigned char plaintext[] = "Encrypt this!";
+    size_t plaintextsize = sizeof(plaintext);
+
+    unsigned char ciphertext[100];
+    size_t ciphertextsize = AES_ECB_encrypt(ciphertext, plaintext, plaintextsize, keys);
+
+    unsigned char deciphertext[100];
+    size_t deciphertextsize = AES_ECB_decrypt(deciphertext, ciphertext, ciphertextsize, keys);
 
     printf("Ciphertext: ");
-    for(int i = 0; i < 16; i++) printf("%02x ", ciphertext[i]);
-    printf("\nDecrypted: %s\n", decryptedtext);
+    for (int i = 0; i < ciphertextsize; i++) printf("%02x ", ciphertext[i]);
 
+    printf("\nDeciphertext: %s\n", deciphertext);
     return 0;
+
 }
 ```
 ## 📝 License
@@ -63,4 +67,4 @@ Contributions are welcome! Feel free to fork this repository, create a new branc
 For any questions or issues, please open an issue on GitHub or contact me directly.
 
 ## 🌐 Connect with Me
-[LinkedIn](https://www.linkedin.com/in/your-profile)
+[LinkedIn](www.linkedin.com/in/the-bikash)
