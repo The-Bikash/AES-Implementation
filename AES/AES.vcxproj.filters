@@ -18,9 +18,12 @@
     <ClInclude Include="header\aes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="header\aes_modes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
