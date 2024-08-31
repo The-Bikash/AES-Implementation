@@ -1,6 +1,6 @@
 # AES Encryption Algorithm Implementation in C
 
-![AES Logo](https://github.com/user-attachments/assets/df36507f-0a8e-4f89-847d-43cfb4e785ea))
+![AES Logo](https://github.com/user-attachments/assets/df36507f-0a8e-4f89-847d-43cfb4e785ea)
 
 Welcome to the AES Encryption Algorithm Implementation repository! This project provides a complete implementation of the Advanced Encryption Standard (AES) in C. AES is a symmetric key encryption algorithm widely used to secure data.
 
