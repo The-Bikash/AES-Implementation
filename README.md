@@ -57,6 +57,12 @@ int main() {
 
 }
 ```
+### 📄 Detailed AES Implementation Guide
+
+For a comprehensive overview and in-depth details of the AES implementation, including explanations, code, and diagrams
+
+[👉 **Click here to download the PDF and dive into the details!**](https://github.com/The-Bikash/AES-Implementation/raw/master/AES_Implementation.pdf)
+
 ## 📝 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
