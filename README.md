@@ -237,6 +237,8 @@ int main() {
     return 0;
 }
 ```
+### 📄 Output of the above code snippets
+![aes_file_output](https://github.com/user-attachments/assets/4132bffb-f7a6-4f53-bc27-32eea07533d5)
 
 ## 📝 License
 This project is licensed under the MIT License - see the LICENSE file for details.
