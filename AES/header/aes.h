@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __AES__
 #define __AES__
 
