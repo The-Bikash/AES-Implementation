@@ -236,6 +236,18 @@ void aes_file(){
 
 int main() {
     aes_file();
+    while (true) {
+        print_message("Continue? : ");
+        char input[33]; int ch;
+        scanf("%3s", input);
+        while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
+        to_lower_case(input);
+        if(strcmp(input, "yes") == 0)
+            aes_file();
+        else break;
+    }
+    
+    getchar();
     return 0;
 }
 
