@@ -32,9 +32,9 @@ int main() {
     start = clock();
 
 
-    size_t ciphertextsize = AES_OFB_encrypt(ciphertext, plaintext, plaintextsize, keys);
+    size_t ciphertextsize = AES_CFB_encrypt(ciphertext, plaintext, plaintextsize, keys);
 
-    size_t deciphertextsize = AES_OFB_decrypt(deciphertext, ciphertext, ciphertextsize, keys);
+    size_t deciphertextsize = AES_CFB_decrypt(deciphertext, ciphertext, ciphertextsize, keys);
 
     end = clock();
 

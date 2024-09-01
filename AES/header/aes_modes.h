@@ -102,11 +102,10 @@ Plaintext Block 1           Plaintext Block 2           Plaintext Block 3   ...
 
 size_t AES_ECB_encrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
-    const Block128* _SrcPtr = (const Block128*)_Src;
-    const Block128* _KeyPtr = (const Block128*)_Key;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
 
-    size_t _NewSize = _Size / 16;
-    size_t i = 0;
+    size_t _NewSize = _Size / 16, i = 0;
     for (; i < _NewSize; ++i)
         _DstPtr[i] = _aes_encrypt(_SrcPtr[i], _KeyPtr);
     if (_Size % 16)
@@ -140,8 +139,8 @@ Ciphertext Block 1           Ciphertext Block 2           Ciphertext Block 3   .
 
 size_t AES_ECB_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
-    const Block128* _SrcPtr = (const Block128*)_Src;
-    const Block128* _KeyPtr = (const Block128*)_Key;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
 
     size_t _NewSize = _Size / 16;
     for (size_t i = 0; i < _NewSize; ++i)
@@ -179,8 +178,8 @@ Plaintext Block 1         Plaintext Block 2         Plaintext Block 3   ...
 
 size_t AES_CBC_encrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
-    const Block128* _SrcPtr = (const Block128*)_Src;
-    const Block128* _KeyPtr = (const Block128*)_Key;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
 
     _Seed(clock());
     *_DstPtr = random_message();
@@ -225,8 +224,8 @@ Ciphertext Block 1         Ciphertext Block 2         Ciphertext Block 3   ...
 
 size_t AES_CBC_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
-    const Block128* _SrcPtr = (const Block128*)_Src;
-    const Block128* _KeyPtr = (const Block128*)_Key;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
 
     ++_SrcPtr;
     size_t _NewSize = _Size / 16 - 1;
@@ -245,8 +244,8 @@ size_t AES_OFB_encrypt(void* _Dst, const void* _Src, size_t _Size, const void* _
     for (; i < _NewSize; ++i)
         _DstPtr[i] = _aes_encrypt(_DstPtr[i - 1], _KeyPtr);
     if (_Size % 16)
-        _DstPtr[i++] = _aes_encrypt(_DstPtr[i - 1], _KeyPtr), pkcs7_pad((unsigned char*)_Src, _Size);
-    array_xor((size_t*)(_DstPtr + 1), (size_t*)_Src, (i - 1) * 2);
+        _DstPtr[i++] = _XorBlock128(_aes_encrypt(_DstPtr[i - 1], _KeyPtr), pkcs7_pad((unsigned char*)_Src, _Size));
+    array_xor((size_t*)(_DstPtr + 1), (size_t*)_Src, (_NewSize - 1) * 2);
     return i * 16;
 }
 
@@ -262,5 +261,34 @@ size_t AES_OFB_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _
     array_xor((size_t*)_DstPtr, (size_t*)(_SrcPtr + 1), _NewSize * 2);
     return pkcs7_unpad((unsigned char*)_Dst, _NewSize * 16);
 }
+
+size_t AES_CFB_encrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
+    Block128* _DstPtr = (Block128*)_Dst;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
+    _Seed(clock());
+    _DstPtr[0] = random_message(); ++_DstPtr;
+
+    size_t _NewSize = _Size / 16, i = 0;
+    for (; i < _NewSize; ++i)
+        _DstPtr[i] = _XorBlock128(_aes_encrypt(*(_DstPtr + i - 1), _KeyPtr), _SrcPtr[i]);
+    if (_Size % 16)
+        _DstPtr[i++] = _XorBlock128(_aes_encrypt(*(_DstPtr + i - 1), _KeyPtr), pkcs7_pad((unsigned char*)_Src, _Size));
+    return (i + 1) * 16;
+}
+
+size_t AES_CFB_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
+    Block128* _DstPtr = (Block128*)_Dst;
+    Block128* _SrcPtr = (Block128*)_Src;
+    Block128* _KeyPtr = (Block128*)_Key;
+
+    size_t _NewSize = _Size / 16 - 1; ++_SrcPtr;
+    for (size_t i = 0; i < _NewSize; ++i)
+        _DstPtr[i] = _aes_encrypt(*(_SrcPtr + i - 1), _KeyPtr);
+    array_xor((size_t*)_DstPtr, (size_t*)_SrcPtr, _NewSize * 2);
+    return pkcs7_unpad((unsigned char*)_Dst, _NewSize * 16);
+}
+
+
 
 #endif
