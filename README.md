@@ -69,6 +69,8 @@ int main() {
 \\ File encryption and Decryption
 
 
+#include "aes.h"
+#include "aes_modes.h"
 #include "aes_file.h"
 
 #include <stdio.h>
@@ -118,7 +120,7 @@ void aes_file(){
     to_lower_case(operation);
 
     while (strcmp(operation, "encrypt") != 0 && strcmp(operation, "decrypt") != 0){
-        print_error("Invalid operation. Please enter 'encrypt' or 'decrypt'");
+        print_error("Invalid operation. Please enter 'encrypt' or 'decrypt': ");
         scanf("%9s", operation);
         while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
         to_lower_case(operation);
@@ -132,7 +134,7 @@ void aes_file(){
     to_upper_case(encryption_mode_str);
 
     while (strcmp(encryption_mode_str, "ECB") != 0 && strcmp(encryption_mode_str, "CBC") != 0 && strcmp(encryption_mode_str, "OFB") != 0 && strcmp(encryption_mode_str, "CFB") != 0 && strcmp(encryption_mode_str, "CTR") != 0){
-        print_error("Invalid mode. Please enter one of the following: ECB, CBC, OFB, CFB, CTR");
+        print_error("Invalid mode. Please enter one of the following: ECB, CBC, OFB, CFB, CTR: ");
         scanf("%3s", encryption_mode_str);
         while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
         to_upper_case(encryption_mode_str);
@@ -205,7 +207,7 @@ void aes_file(){
     }
 
     if (strcmp(operation, "encrypt") == 0) {
-        print_banner("Starting Encryption...\n");
+        print_banner("Starting Encryption...");
         start = clock();
         size_t outputfilesize = AES_encryptfile(outputfile, inputfile,  keys, encryption_mode);
         end = clock();
@@ -216,7 +218,7 @@ void aes_file(){
             printf("\033[1;32mEncryption completed in: %.2f milliseconds\033[0m\n\n", cpu_time_used);
         }
     } else if (strcmp(operation, "decrypt") == 0) {
-        print_banner("Starting Decryption...\n");
+        print_banner("Starting Decryption...");
         start = clock();
         size_t outputfilesize = AES_decryptfile(outputfile, inputfile,  keys, encryption_mode);
         end = clock();
@@ -236,6 +238,8 @@ int main() {
     aes_file();
     return 0;
 }
+
+
 ```
 ### 📄 Output of the above code snippets
 ![aes_file_output](https://github.com/user-attachments/assets/4132bffb-f7a6-4f53-bc27-32eea07533d5)
