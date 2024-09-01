@@ -250,4 +250,4 @@ Contributions are welcome! Feel free to fork this repository, create a new branc
 For any questions or issues, please open an issue on GitHub or contact me directly.
 
 ## 🌐 Connect with Me
-[LinkedIn](www.linkedin.com/in/The-Bikash)
+[LinkedIn](https://www.linkedin.com/in/the-bikash/)
