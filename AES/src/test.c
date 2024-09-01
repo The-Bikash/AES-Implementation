@@ -1,7 +1,7 @@
 #define  _CRT_SECURE_NO_WARNINGS
 #include "../header/aes.h"
 #include "../header/aes_modes.h"
-#include "../header/aes_file_encryption.h"
+#include "../header/aes_file.h"
 
 
 #include <stdio.h>

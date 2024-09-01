@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\aes.h" />
-    <ClInclude Include="header\aes_file_encryption.h" />
+    <ClInclude Include="header\aes_file.h" />
     <ClInclude Include="header\aes_modes.h" />
   </ItemGroup>
   <ItemGroup>
