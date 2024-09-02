@@ -290,30 +290,44 @@ size_t AES_CFB_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _
     return pkcs7_unpad((unsigned char*)_Dst, _NewSize * 16);
 }
 
+Block128 increment(Block128 ctr) {
+    for (int i = 15; i >= 0; i--)
+        if (++ctr.cells[i] != 0) break;
+    return ctr;
+}
+
 size_t AES_CTR_encrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
     Block128* _SrcPtr = (Block128*)_Src;
     Block128* _KeyPtr = (Block128*)_Key;
     _Seed(clock());
-    _DstPtr[0] = random_message(); ++_DstPtr;
+    Block128 ctr = random_message();
+    _DstPtr[0] = ctr;
 
-    size_t _NewSize = _Size / 16, i = 0;
-    for (; i < _NewSize; ++i)
-        _DstPtr[i] = _XorBlock128(_aes_encrypt(*(_DstPtr + i - 1), _KeyPtr), _SrcPtr[i]);
-    if (_Size % 16)
-        _DstPtr[i++] = _XorBlock128(_aes_encrypt(*(_DstPtr + i - 1), _KeyPtr), pkcs7_pad((unsigned char*)_Src, _Size));
-    return (i + 1) * 16;
+    size_t _NewSize = _Size / 16 + 1, i = 1;
+    for (; i < _NewSize; ++i) {
+        ctr = increment(ctr);
+        _DstPtr[i] = _XorBlock128(_aes_encrypt(ctr, _KeyPtr), _SrcPtr[i - 1]);
+    }
+    if (_Size % 16) {
+        ctr = increment(ctr);
+        _DstPtr[i++] = _XorBlock128(_aes_encrypt(ctr, _KeyPtr), pkcs7_pad((unsigned char*)_Src, _Size));
+    }
+    return i * 16;
 }
 
 size_t AES_CTR_decrypt(void* _Dst, const void* _Src, size_t _Size, const void* _Key) {
     Block128* _DstPtr = (Block128*)_Dst;
     Block128* _SrcPtr = (Block128*)_Src;
     Block128* _KeyPtr = (Block128*)_Key;
+    Block128 ctr = _SrcPtr[0];
 
     size_t _NewSize = _Size / 16 - 1; ++_SrcPtr;
-    for (size_t i = 0; i < _NewSize; ++i)
-        _DstPtr[i] = _aes_encrypt(*(_SrcPtr + i - 1), _KeyPtr);
-    array_xor((size_t*)_DstPtr, (size_t*)_SrcPtr, _NewSize * 2);
+
+    for (size_t i = 0; i < _NewSize; ++i) {
+        ctr = increment(ctr);
+        _DstPtr[i] = _XorBlock128(_aes_encrypt(ctr, _KeyPtr), _SrcPtr[i]);
+    }
     return pkcs7_unpad((unsigned char*)_Dst, _NewSize * 16);
 }
 

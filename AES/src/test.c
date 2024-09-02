@@ -1,8 +1,8 @@
-#define  _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "../header/aes.h"
 #include "../header/aes_modes.h"
 #include "../header/aes_file.h"
-
 
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +14,12 @@
 void to_upper_case(char* str) {
     while (*str) {
         *str = toupper((unsigned char)*str);
+        str++;
+    }
+}
+void to_lower_case(char* str) {
+    while (*str) {
+        *str = tolower((unsigned char)*str);
         str++;
     }
 }
@@ -42,13 +48,14 @@ void aes_file() {
     printf("\033[1;34mEnter 'encrypt' or 'decrypt' to choose operation: \033[0m");
     scanf("%9s", operation);
     while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/ }
+    to_lower_case(operation);
 
     while (strcmp(operation, "encrypt") != 0 && strcmp(operation, "decrypt") != 0) {
-        print_error("Invalid operation. Please enter 'encrypt' or 'decrypt'");
+        print_error("Invalid operation. Please enter 'encrypt' or 'decrypt': ");
         scanf("%9s", operation);
         while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/ }
+        to_lower_case(operation);
     }
-
 
 
 
@@ -58,7 +65,7 @@ void aes_file() {
     to_upper_case(encryption_mode_str);
 
     while (strcmp(encryption_mode_str, "ECB") != 0 && strcmp(encryption_mode_str, "CBC") != 0 && strcmp(encryption_mode_str, "OFB") != 0 && strcmp(encryption_mode_str, "CFB") != 0 && strcmp(encryption_mode_str, "CTR") != 0) {
-        print_error("Invalid mode. Please enter one of the following: ECB, CBC, OFB, CFB, CTR");
+        print_error("Invalid mode. Please enter one of the following: ECB, CBC, OFB, CFB, CTR: ");
         scanf("%3s", encryption_mode_str);
         while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/ }
         to_upper_case(encryption_mode_str);
@@ -101,7 +108,6 @@ void aes_file() {
     size_t len = strlen(inputpath);
     if (len > 0 && inputpath[len - 1] == '\n')
         inputpath[len - 1] = '\0';
-    //while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
     FILE* inputfile = fopen(inputpath, "rb");
 
     while (inputfile == NULL) {
@@ -111,7 +117,6 @@ void aes_file() {
         len = strlen(inputpath);
         if (len > 0 && inputpath[len - 1] == '\n')
             inputpath[len - 1] = '\0';
-        //while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
         inputfile = fopen(inputpath, "rb");
     }
 
@@ -120,7 +125,6 @@ void aes_file() {
     len = strlen(outputpath);
     if (len > 0 && outputpath[len - 1] == '\n')
         outputpath[len - 1] = '\0';
-    //while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
     FILE* outputfile = fopen(outputpath, "wb");
 
     while (outputfile == NULL) {
@@ -130,12 +134,11 @@ void aes_file() {
         len = strlen(outputpath);
         if (len > 0 && outputpath[len - 1] == '\n')
             outputpath[len - 1] = '\0';
-        //while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/}
         outputfile = fopen(outputpath, "wb");
     }
 
     if (strcmp(operation, "encrypt") == 0) {
-        print_banner("Starting Encryption...\n");
+        print_banner("Starting Encryption...");
         start = clock();
         size_t outputfilesize = AES_encryptfile(outputfile, inputfile, keys, encryption_mode);
         end = clock();
@@ -147,7 +150,7 @@ void aes_file() {
         }
     }
     else if (strcmp(operation, "decrypt") == 0) {
-        print_banner("Starting Decryption...\n");
+        print_banner("Starting Decryption...");
         start = clock();
         size_t outputfilesize = AES_decryptfile(outputfile, inputfile, keys, encryption_mode);
         end = clock();
@@ -164,8 +167,19 @@ void aes_file() {
 
 
 int main() {
-
     aes_file();
+    while (true) {
+        print_message("Continue? : ");
+        char input[33]; int ch;
+        scanf("%3s", input);
+        while ((ch = getchar()) != '\n' && ch != EOF) {/*Discard remaining input*/ }
+        to_lower_case(input);
+        if (strcmp(input, "yes") == 0)
+            aes_file();
+        else break;
+    }
+
+    getchar();
     return 0;
 }
 

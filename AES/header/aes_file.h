@@ -37,7 +37,7 @@ size_t AES_encryptfile(FILE* _Output, FILE* _Input, const void* _Key, AES_MODE _
     Block128* _KeyPtr = (Block128*)_Key;
     size_t _Size = _file_size(_Input);
     if (_Size == 0) {
-        print_error("Error: Source file is maybe empty or invalid.\n");
+        print_error("Source file is maybe empty or invalid.\n");
         return 0;
     }
     unsigned char* _Src = (unsigned char*)malloc(_Size);
@@ -56,7 +56,7 @@ size_t AES_decryptfile(FILE* _Output, FILE* _Input, const void* _Key, AES_MODE _
     Block128* _KeyPtr = (Block128*)_Key;
     size_t _Size = _file_size(_Input);
     if (_Size == 0) {
-        print_error("Error: Source file is empty.\n");
+        print_error("Source file is maybe empty or invalid.\n");
         return 0;
     }
     unsigned char* _Src = (unsigned char*)malloc(_Size);
